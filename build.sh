@@ -11,21 +11,18 @@ else
     source venv/bin/activate
 fi
 
-# Install PyInstaller
-pip install pyinstaller
+# Convert the PNG to an ICNS file for macOS if not present
+if [ ! -f "icon.icns" ]; then
+    sips -s format icns icon.png --out icon.icns
+fi
 
-# Convert the PNG to an ICNS file for macOS
-sips -s format icns icon.png --out icon.icns
+# Package the app via osacompile AppleScript wrapper
+echo "Creating macOS App Launcher wrapper..."
+rm -rf "US News Aggregator.app"
+osacompile -o "US News Aggregator.app" -e "do shell script \"cd '$DIR' && ./run.sh > /dev/null 2>&1 &\""
 
-# Package the app
-# -w: windowed (no console)
-# -n: app name
-# -i: icon
-# --add-data: bundle the templates and sources.txt
-pyinstaller --noconfirm --windowed --name "US News Aggregator" \
-    --icon "icon.icns" \
-    --add-data "templates:templates" \
-    --add-data "sources.txt:." \
-    desktop.py
+# Replace the default icon with our generated icon
+cp icon.icns "US News Aggregator.app/Contents/Resources/applet.icns"
+touch "US News Aggregator.app"
 
-echo "Build complete. App is located in dist/US News Aggregator.app"
+echo "Build complete. App launcher is located at US News Aggregator.app"
