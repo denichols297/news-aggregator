@@ -1,14 +1,12 @@
 import os
 import google.generativeai as genai
 
-api_key = os.environ.get("GEMINI_API_KEY")
-
-if api_key:
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-2.5-flash')
-else:
-    model = None
-
+def get_model():
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if api_key:
+        genai.configure(api_key=api_key)
+        return genai.GenerativeModel('gemini-2.5-flash')
+    return None
 ALLSIDES_RATINGS = {
     "New York Times": "Lean Left",
     "Fox News": "Right",
@@ -33,6 +31,7 @@ def get_bias_rating(source_name):
     return "Unknown"
 
 def generate_daily_brief(news_data):
+    model = get_model()
     if not model:
         return "<h2>AI Unvailable</h2><p>Please set the <code>GEMINI_API_KEY</code> environment variable to generate the daily brief.</p>"
 
