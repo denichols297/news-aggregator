@@ -1,0 +1,23 @@
+{% for source_name, source_data in news.items() %}
+<section class="source-column">
+    <div class="source-header">
+        <h2 class="source-title">{{ source_name }}</h2>
+        {% set bias = source_data.get('rating', 'Unknown') %}
+        {% set bias_class = bias | replace(' ', '-') %}
+        <span class="bias-badge bias-{{ bias_class }}">{{ bias }}</span>
+    </div>
+
+    <div class="stories-list">
+        {% if source_data.get('stories') %}
+        {% for story in source_data.get('stories', []) %}
+        <a href="{{ story.url }}" target="_blank" class="story-card">
+            <h3 class="story-title">{{ story.title }}</h3>
+            <p class="story-summary">{{ story.summary }}</p>
+        </a>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">No recent stories found matching criteria.</div>
+        {% endif %}
+    </div>
+</section>
+{% endfor %}
