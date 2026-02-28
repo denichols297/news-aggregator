@@ -16,13 +16,19 @@ if [ ! -f "icon.icns" ]; then
     sips -s format icns icon.png --out icon.icns
 fi
 
-# Package the app via osacompile AppleScript wrapper
-echo "Creating macOS App Launcher wrapper..."
-rm -rf "US News Aggregator.app"
-osacompile -o "US News Aggregator.app" -e "do shell script \"cd '$DIR' && ./run.sh > /dev/null 2>&1 &\""
+# Package the app using PyInstaller
+# --windowed prevent a separate python terminal icon
+# --icon uses our custom icon natively
+echo "Packaging application with PyInstaller..."
+pip install pyinstaller || true
 
-# Replace the default icon with our generated icon
-cp icon.icns "US News Aggregator.app/Contents/Resources/applet.icns"
-touch "US News Aggregator.app"
+rm -rf "dist/US News Aggregator.app" build/
 
-echo "Build complete. App launcher is located at US News Aggregator.app"
+pyinstaller --noconfirm --windowed --name "US News Aggregator" \
+    --icon "icon.icns" \
+    --add-data "templates:templates" \
+    --add-data "sources.txt:." \
+    desktop.py
+
+echo "Build complete. App is located in dist/US News Aggregator.app"
+

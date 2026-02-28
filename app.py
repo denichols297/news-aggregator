@@ -37,7 +37,15 @@ def get_cached_or_fetch_news():
     if should_update:
         try:
             print("Updating news cache...")
-            sources = load_sources(resource_path('sources.txt'))
+            
+            # Use the live text file so changes are picked up dynamically
+            live_sources_path = os.path.expanduser("~/.gemini/antigravity/scratch/news-aggregate/sources.txt")
+            if os.path.exists(live_sources_path):
+                sources_file = live_sources_path
+            else:
+                sources_file = resource_path('sources.txt')
+                
+            sources = load_sources(sources_file)
             data = get_news_for_sources(sources)
             with cache_lock:
                 news_cache["data"] = data
