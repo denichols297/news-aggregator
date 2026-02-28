@@ -2,3 +2,9 @@ venv/
 __pycache__/
 *.pyc
 .env
+
+MyIcon.iconset/
+build/
+dist/
+US News Aggregator.app/
+US News Aggregator.spec
