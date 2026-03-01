@@ -302,7 +302,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            fetch('/columns')
+            fetch('/columns?_=' + new Date().getTime())
                 .then(response => response.text())
                 .then(html => {
                     document.getElementById('news-container').innerHTML = html;
