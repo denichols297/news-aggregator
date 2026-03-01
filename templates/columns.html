@@ -2,9 +2,15 @@
 <section class="source-column">
     <div class="source-header">
         <h2 class="source-title">{{ source_name }}</h2>
-        {% set bias = source_data.get('rating', 'Unknown') %}
-        {% set bias_class = bias | replace(' ', '-') %}
-        <span class="bias-badge bias-{{ bias_class }}">{{ bias }}</span>
+        <div class="badges-container">
+            {% set bias = source_data.get('rating', 'Unknown') %}
+            {% set bias_class = bias | replace(' ', '-') %}
+            <span class="bias-badge bias-{{ bias_class }}">Bias: {{ bias }}</span>
+
+            {% set factual = source_data.get('factual_rating', 'Unknown') %}
+            {% set factual_class = factual | replace(' ', '-') %}
+            <span class="bias-badge factual-{{ factual_class }}">Factual: {{ factual }}</span>
+        </div>
     </div>
 
     <div class="stories-list">

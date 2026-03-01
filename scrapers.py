@@ -2,7 +2,7 @@ import os
 import urllib.parse
 import feedparser
 from bs4 import BeautifulSoup
-from ai_client import get_bias_rating
+from ai_client import get_bias_rating, get_factual_reporting
 
 def load_sources(filepath):
     if not os.path.exists(filepath):
@@ -61,9 +61,11 @@ def get_news_for_sources(sources):
         rss_url = get_google_news_rss(source)
         stories = fetch_rss_stories(rss_url, limit=5)
         rating = get_bias_rating(source)
+        factual = get_factual_reporting(source)
         
         news_data[source] = {
             "rating": rating,
+            "factual_rating": factual,
             "stories": stories
         }
         

@@ -24,8 +24,32 @@ ALLSIDES_RATINGS = {
     "Politico": "Lean Left"
 }
 
+MBFC_FACTUAL_REPORTING = {
+    "New York Times": "High",
+    "Fox News": "Mixed",
+    "CNN": "Mostly Factual",
+    "NPR": "High",
+    "Wall Street Journal": "High",
+    "BBC News": "High",
+    "Associated Press": "Very High",
+    "Reuters": "Very High",
+    "HuffPost": "Mostly Factual",
+    "Washington Post": "Mostly Factual",
+    "New York Post": "Mixed",
+    "Bloomberg": "High",
+    "Axios": "High",
+    "Politico": "High",
+    "Center for Strategic and International Studies": "High"
+}
+
 def get_bias_rating(source_name):
     for known_source, rating in ALLSIDES_RATINGS.items():
+        if known_source.lower() in source_name.lower():
+            return rating
+    return "Unknown"
+
+def get_factual_reporting(source_name):
+    for known_source, rating in MBFC_FACTUAL_REPORTING.items():
         if known_source.lower() in source_name.lower():
             return rating
     return "Unknown"
