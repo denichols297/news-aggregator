@@ -1,6 +1,7 @@
 Center for Strategic and International Studies
 BBC News
-NPR
+Fox News
 Associated Press
 Reuters
-Fox News
+NPR
+CNN
