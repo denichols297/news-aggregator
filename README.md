@@ -1,6 +1,6 @@
 # US News Aggregator
 
-A standalone desktop application built with Python, Flask, and PyWebView that aggregates news from a customizable list of sources, categorizes them by AllSides bias ratings, and uses Google's Gemini AI to generate a cohesive "Daily Brief".
+A standalone desktop application built with Python, Flask, and PyWebView that aggregates news from a customizable list of sources, categorizes them by AllSides bias ratings, uses MediaBiasFactCheck.com as source of truth for source accuracy, and uses Google's Gemini AI to generate a cohesive "Daily Brief".
 
 ## Architecture
 - **Backend:** Flask web server fetching RSS feeds from Google News.
