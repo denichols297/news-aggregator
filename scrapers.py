@@ -13,7 +13,7 @@ def load_sources(filepath):
     return sources
 
 def get_google_news_rss(source_name):
-    query = f'source:"{source_name}" (US OR "national" OR "world" OR "international" OR "foreign affairs" OR "politics")'
+    query = f'source:"{source_name}" (US OR "national" OR "world" OR "international" OR "foreign affairs" OR "politics") -"opinion" -"editorial" -"op-ed"'
     encoded_query = urllib.parse.quote(query)
     url = f"https://news.google.com/rss/search?q={encoded_query}&hl=en-US&gl=US&ceid=US:en"
     return url
@@ -29,7 +29,12 @@ def fetch_rss_stories(url, limit=5):
     try:
         feed = feedparser.parse(url)
         
-        for entry in feed.entries[:limit]:
+        opinion_keywords = ["opinion", "editorial", "op-ed"]
+        
+        for entry in feed.entries:
+            if len(stories) >= limit:
+                break
+                
             title = entry.get('title', 'No Title')
             
             if " - " in title:
@@ -38,6 +43,12 @@ def fetch_rss_stories(url, limit=5):
             raw_summary = entry.get('description', '')
             clean_summary = clean_html(raw_summary)
             link = entry.get('link', '')
+            
+            # Secondary check for opinion pieces
+            title_lower = title.lower()
+            summary_lower = clean_summary.lower()
+            if any(keyword in title_lower or keyword in summary_lower for keyword in opinion_keywords):
+                continue
             
             # Fast raw feed loading
             summary_text = clean_summary[:200] + ("..." if len(clean_summary) > 200 else clean_summary)
