@@ -1,4 +1,5 @@
 import os
+import time
 import urllib.parse
 import feedparser
 from bs4 import BeautifulSoup
@@ -13,7 +14,7 @@ def load_sources(filepath):
     return sources
 
 def get_google_news_rss(source_name):
-    query = f'source:"{source_name}" (US OR "national" OR "world" OR "international" OR "foreign affairs" OR "politics") -"opinion" -"editorial" -"op-ed"'
+    query = f'source:"{source_name}" ("US" OR "United States" OR "America" OR "national" OR "world" OR "international" OR "foreign affairs" OR "ai" OR "artifical intelligence" OR "war" OR "politics") -"opinion" -"editorial" -"op-ed"'
     encoded_query = urllib.parse.quote(query)
     url = f"https://news.google.com/rss/search?q={encoded_query}&hl=en-US&gl=US&ceid=US:en"
     return url
@@ -24,17 +25,15 @@ def clean_html(raw_html):
     cleantext = BeautifulSoup(raw_html, "html.parser").text
     return cleantext.strip()
 
-def fetch_rss_stories(url, limit=5):
+def fetch_rss_stories(url, limit=7):
     stories = []
     try:
         feed = feedparser.parse(url)
         
         opinion_keywords = ["opinion", "editorial", "op-ed"]
+        valid_entries = []
         
         for entry in feed.entries:
-            if len(stories) >= limit:
-                break
-                
             title = entry.get('title', 'No Title')
             
             if " - " in title:
@@ -53,10 +52,25 @@ def fetch_rss_stories(url, limit=5):
             # Fast raw feed loading
             summary_text = clean_summary[:200] + ("..." if len(clean_summary) > 200 else clean_summary)
             
-            stories.append({
+            # Extract published_parsed (time.struct_time) for sorting, fallback to ancient time
+            published = entry.get('published_parsed') or time.struct_time((0,0,0,0,0,0,0,0,0))
+            
+            valid_entries.append({
                 "title": title,
                 "summary": summary_text,
-                "url": link
+                "url": link,
+                "published_parsed": published
+            })
+            
+        # Sort by published date (descending)
+        valid_entries.sort(key=lambda x: x["published_parsed"], reverse=True)
+        
+        # Take top limit entries
+        for entry in valid_entries[:limit]:
+            stories.append({
+                "title": entry["title"],
+                "summary": entry["summary"],
+                "url": entry["url"]
             })
             
     except Exception as e:
@@ -64,13 +78,14 @@ def fetch_rss_stories(url, limit=5):
         
     return stories
 
+
 def get_news_for_sources(sources):
     news_data = {}
     
     for source in sources:
         print(f"Fetching news for {source}...")
         rss_url = get_google_news_rss(source)
-        stories = fetch_rss_stories(rss_url, limit=5)
+        stories = fetch_rss_stories(rss_url, limit=7)
         rating = get_bias_rating(source)
         factual = get_factual_reporting(source)
         
