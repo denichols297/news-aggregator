@@ -14,8 +14,7 @@ def load_sources(filepath):
     return sources
 
 def get_google_news_rss(source_name):
-    query = f'source:"{source_name}"'
-#    query = f'source:"{source_name}" -"opinion" -"editorial" -"op-ed" when:1d'
+    query = f'source:"{source_name}" -"opinion" -"editorial" -"op-ed" when:2d'
     encoded_query = urllib.parse.quote(query)
     url = f"https://news.google.com/rss/search?q={encoded_query}&hl=en-US&gl=US&ceid=US:en"
     return url

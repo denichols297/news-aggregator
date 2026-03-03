@@ -1,5 +1,5 @@
 Reuters
-NewsNationNow
+NewsNation
 BBC
 CNN
 Fox News
