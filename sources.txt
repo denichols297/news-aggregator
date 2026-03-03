@@ -1,7 +1,6 @@
-BBC
 Reuters
-Associated Press
-NPR
-Fox News
+NewsNation
+BBC
 CNN
-Al Jazeera
+Fox News
+NPR

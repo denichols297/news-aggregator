@@ -18,6 +18,9 @@
         {% for story in source_data.get('stories', []) %}
         <a href="{{ story.url }}" target="_blank" class="story-card">
             <h3 class="story-title">{{ story.title }}</h3>
+            <span class="story-date"
+                style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">{{
+                story.published_date }}</span>
             <p class="story-summary">{{ story.summary }}</p>
         </a>
         {% endfor %}

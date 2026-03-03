@@ -14,7 +14,7 @@ def load_sources(filepath):
     return sources
 
 def get_google_news_rss(source_name):
-    query = f'source:"{source_name}" ("US" OR "United States" OR "America" OR "national" OR "world" OR "international" OR "foreign affairs" OR "ai" OR "artifical intelligence" OR "war" OR "politics") -"opinion" -"editorial" -"op-ed"'
+    query = f'source:"{source_name}" ("US" OR "United States" OR "America" OR "national" OR "world" OR "international" OR "foreign affairs" OR "ai" OR "artifical intelligence" OR "war" OR "politics") -"opinion" -"editorial" -"op-ed" when:1d'
     encoded_query = urllib.parse.quote(query)
     url = f"https://news.google.com/rss/search?q={encoded_query}&hl=en-US&gl=US&ceid=US:en"
     return url
@@ -67,10 +67,12 @@ def fetch_rss_stories(url, limit=7):
         
         # Take top limit entries
         for entry in valid_entries[:limit]:
+            published_str = time.strftime('%b %d, %Y %I:%M %p', entry["published_parsed"]) if entry["published_parsed"].tm_year > 1970 else "Unknown Date"
             stories.append({
                 "title": entry["title"],
                 "summary": entry["summary"],
-                "url": entry["url"]
+                "url": entry["url"],
+                "published_date": published_str
             })
             
     except Exception as e:
