@@ -14,7 +14,8 @@ def load_sources(filepath):
     return sources
 
 def get_google_news_rss(source_name):
-    query = f'source:"{source_name}" -"opinion" -"editorial" -"op-ed" when:1d'
+    query = f'source:"{source_name}"'
+#    query = f'source:"{source_name}" -"opinion" -"editorial" -"op-ed" when:1d'
     encoded_query = urllib.parse.quote(query)
     url = f"https://news.google.com/rss/search?q={encoded_query}&hl=en-US&gl=US&ceid=US:en"
     return url
@@ -25,7 +26,7 @@ def clean_html(raw_html):
     cleantext = BeautifulSoup(raw_html, "html.parser").text
     return cleantext.strip()
 
-def fetch_rss_stories(url, limit=7):
+def fetch_rss_stories(url, limit=10):
     stories = []
     try:
         feed = feedparser.parse(url)
@@ -87,7 +88,7 @@ def get_news_for_sources(sources):
     for source in sources:
         print(f"Fetching news for {source}...")
         rss_url = get_google_news_rss(source)
-        stories = fetch_rss_stories(rss_url, limit=7)
+        stories = fetch_rss_stories(rss_url, limit=10)
         rating = get_bias_rating(source)
         factual = get_factual_reporting(source)
         
